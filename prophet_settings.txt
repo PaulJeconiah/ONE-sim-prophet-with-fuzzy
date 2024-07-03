@@ -1,0 +1,29 @@
+## Test scenario using Prophet router and Points of Interest (POIs)
+
+Scenario.endTime = 274883
+
+Scenario.name = PRoPHET-%%ProphetRouter.secondsInTimeUnit%%siu
+Group.router = ProphetRouter
+Group.nodeLocation = 1, 1
+
+##Begin energy module settings#####################################################################
+Group.intialEnergy = 5000
+Group.scanEnergy = 0.01
+Group.scanResponseEnergy = 0.01
+Group.transmitEnergy = 2
+Group.scanInterval = 600
+##End energy module settings#####################################################################
+
+ProphetRouter.secondsInTimeUnit = 30
+
+# Define POI data files
+PointsOfInterest.poiFile1 = data/ParkPOIs.wkt
+PointsOfInterest.poiFile2 = data/CentralPOIs.wkt
+PointsOfInterest.poiFile3 = data/WestPOIs.wkt
+PointsOfInterest.poiFile4 = data/shops.wkt
+
+# Define probabilities for different groups selecting POIs from different POI files
+Group1.pois = 1,0.3, 2,0.1, 3,0.1, 4, 0.1
+Group2.pois = 2,0.3, 3,0.1
+Group3.pois = 3,0.3, 2,0.1, 1,0.1, 4, 0.1
+Group4.pois = 4,0.3, 2,0.1, 3,0.1, 1, 0.1

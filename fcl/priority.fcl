@@ -1,0 +1,57 @@
+
+FUNCTION_BLOCK priority	// Block definition (there may be more than one block per file)
+
+VAR_INPUT				// Define input variables
+	ftc : REAL;
+	ttl : REAL;
+END_VAR
+
+VAR_OUTPUT				// Define output variable
+	priority : REAL;
+END_VAR
+
+FUZZIFY ftc			// Fuzzify input variable 'ftc': {'low', 'fmedium' , 'high'}
+	TERM low := (0, 1) (1, 1) (8,0) ;
+	TERM fmedium := (0,0) (8,1) (16,0);
+	TERM high := (8, 0) (15, 1) (16,1) ;
+END_FUZZIFY
+
+FUZZIFY ttl			// Fuzzify input variable 'ttl': { 'small', 'tmedium' , 'large' }
+	TERM small := (0, 1) (250, 0) ;
+	TERM tmedium := (0,0) (250,1) (600,0);
+	TERM large := (250,0) (600,1);
+END_FUZZIFY
+
+DEFUZZIFY priority			// Defzzzify output variable 'priority' : {'BS0', 'BS1', 'BS2', 'BS3', 'BS4', 'BS5', 'BS6', 'BS7', 'BS8' }
+	TERM BS0 := (0,1) (0.1,1) (0.15,0);
+	TERM BS1 := (0.15,0) (0.2,1) (0.25,0);
+	TERM BS2 := (0.25,0) (0.3,1) (0.35,0);
+	TERM BS3 := (0.35,0) (0.4,1) (0.45,0);
+	TERM BS4 := (0.45,0) (0.5,1) (0.55,0);
+	TERM BS5 := (0.55,0) (0.6,1) (0.65,0);
+	TERM BS6 := (0.65,0) (0.7,1) (0.75,0);
+	TERM BS7 := (0.75,0) (0.8,1) (0.85,0);
+	TERM BS8 := (0.85,0) (0.9,1) (1,1);
+	METHOD : COA;		// Use 'Center Of Gravity' defuzzification method
+	DEFAULT := 0;		// Default value is 0 (if no rule activates defuzzifier)
+END_DEFUZZIFY
+
+RULEBLOCK No1
+	AND : MIN;			// Use 'min' for 'and' (also implicit use 'max' for 'or' to fulfill DeMorgan's Law)
+	ACT : MIN;			// Use 'min' activation method
+	ACCU : MAX;			// Use 'max' accumulation method
+
+	RULE 1 : IF ftc IS low AND ttl IS small THEN priority IS BS0;
+	RULE 2 : IF ftc IS low AND ttl IS tmedium THEN priority IS BS1;
+	RULE 3 : IF ftc IS low AND ttl IS large THEN priority IS BS2;
+	RULE 4 : IF ftc IS fmedium AND ttl IS small THEN priority IS BS3;
+	RULE 5 : IF ftc IS fmedium AND ttl IS tmedium THEN priority IS BS4;
+	RULE 6 : IF ftc IS fmedium AND ttl IS large THEN priority IS BS5;
+	RULE 7 : IF ftc IS high AND ttl IS small THEN priority IS BS6;
+	RULE 8 : IF ftc IS high AND ttl IS tmedium THEN priority IS BS7;
+	RULE 9 : IF ftc IS high AND ttl IS large THEN priority IS BS8;
+	
+END_RULEBLOCK
+
+END_FUNCTION_BLOCK
+
